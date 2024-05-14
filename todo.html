@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ToDo List</title>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    class ToDoList extends React.Component {
+      state = {
+        items: [],
+        newItemText: ''
+      };
+
+      handleAddItem = () => {
+        if (this.state.newItemText.trim() !== '') {
+          const newItem = { text: this.state.newItemText, completed: false };
+          this.setState({
+            items: [...this.state.items, newItem],
+            newItemText: ''
+          });
+        }
+      };
+
+      handleDeleteItem = (index) => {
+        this.setState({
+          items: this.state.items.filter((_, i) => i !== index)
+        });
+      };
+
+      handleToggleComplete = (index) => {
+        const updatedItems = [...this.state.items];
+        updatedItems[index].completed = !updatedItems[index].completed;
+        this.setState({ items: updatedItems });
+      };
+
+      handleInputChange = (event) => {
+        this.setState({ newItemText: event.target.value });
+      };
+
+      render() {
+        return (
+          <div>
+            <h2>To Do List</h2>
+            <input
+              type="text"
+              value={this.state.newItemText}
+              onChange={this.handleInputChange}
+            />
+            <button onClick={this.handleAddItem}>Add</button>
+            <ul>
+              {this.state.items.map((item, index) => (
+                <li key={index} className={item.completed ? 'completed' : ''}>
+                  <input
+                    type="checkbox"
+                    checked={item.completed}
+                    onChange={() => this.handleToggleComplete(index)}
+                  />
+                  <span>{item.text}</span>
+                  <button onClick={() => this.handleDeleteItem(index)}>Delete</button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      }
+    }
+
+    ReactDOM.render(<ToDoList />, document.getElementById('root'));
+  </script>
+</body>
+</html>
